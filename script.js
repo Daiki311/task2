@@ -23,7 +23,7 @@ const createImage = (imagePath) => {
       // 要素を返す
       resolve(imgElement);
     };
-
+    
     imgElement.onerror = () => {
       reject(new Error("Failed to load image"));
     };
