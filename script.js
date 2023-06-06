@@ -1,3 +1,17 @@
+const image1 = "images/1_image.jpeg";
+const image2 = "images/2_image.jpeg";
+
+const imgView = async () => {
+  try {
+    await createImage(image1);
+    await wait(2);
+    await createImage(image2);
+    await wait(2);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const createImage = (imagePath) => {
   // まずはhtmlのbodyを指定
   const body = document.body;
@@ -33,20 +47,5 @@ const wait = (seconds) => {
     }, seconds * 1000);
   });
 };
-// 画像1を読み込ませる
-const image = "images/1_image.jpeg";
-createImage(image)
-  .then(() => {
-    return wait(2);
-  })
-  .then(() => {
-    // 画像2を読み込む
-    const image = "images/2_image.jpeg";
-    createImage(image);
-  })
-  .then(() => {
-    return wait(2);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+
+imgView();
