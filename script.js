@@ -1,51 +1,54 @@
-const image1 = "images/1_image.jpeg";
-const image2 = "images/2_image.jpeg";
-
-const imgView = async () => {
-  try {
-    await createImage(image1);
-    await wait(2);
-    await createImage(image2);
-    await wait(2);
-  } catch (error) {
-    console.error(error);
+class imageLoader {
+  constructor(imagePath1, imagePath2) {
+    this.body = document.body;
+    this.imagePath1 = imagePath1;
+    this.imagePath2 = imagePath2;
   }
-};
 
-const createImage = (imagePath) => {
-  // まずはhtmlのbodyを指定
-  const body = document.body;
-  // 次にimg要素を作る
-  const imgElement = document.createElement("img");
-  imgElement.src = imagePath;
-  //クラス名をimagesに変更
-  imgElement.classList.add("images");
-  return new Promise((resolve, reject) => {
-    // 画像を読み込んだら発火
-    imgElement.onload = () => {
-      // img要素をbodyに追加
-      body.appendChild(imgElement);
-      // 要素を返す
-      resolve(imgElement);
-    };
+  // 画像要素を生成
+  createImage(imagePath) {
+    return new Promise((resolve, reject) => {
+      const imgElement = document.createElement("img");
+      imgElement.src = imagePath;
+      imgElement.classList.add("images");
 
-    imgElement.onerror = () => {
-      reject(new Error("Failed to load image"));
-    };
-  });
-};
+      imgElement.onload = () => {
+        this.body.appendChild(imgElement);
+        resolve(imgElement);
+      };
 
-// wait()を使用すると2秒待機後画像非表示
-const wait = (seconds) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const imgElement = document.querySelectorAll(".images");
-      imgElement.forEach((imgElement) => {
-        imgElement.style.display = "none";
-      });
-      resolve();
-    }, seconds * 1000);
-  });
-};
+      imgElement.onerror = () => {
+        reject(new Error("Failed to load image"));
+      };
+    });
+  }
 
-imgView();
+  // 2秒待機して消す
+  wait(seconds) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const imgElement = document.querySelectorAll(".images");
+        imgElement.forEach((imgElement) => {
+          imgElement.style.display = "none";
+        });
+        resolve();
+      }, seconds * 1000);
+    });
+  }
+
+  async loadImage() {
+    try {
+      const loader = new imageLoader();
+      await this.createImage(imagePath1);
+      await this.wait(2);
+      await this.createImage(imagePath2);
+      await this.wait(2);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+const imagePath1 = "images/1_image.jpeg";
+const imagePath2 = "images/2_image.jpeg";
+const loader = new imageLoader();
+loader.loadImage();
