@@ -1,15 +1,14 @@
-class imageLoader {
-  constructor(imagePath1, imagePath2) {
-    this.body = document.body;
-    this.imagePath1 = imagePath1;
-    this.imagePath2 = imagePath2;
+class ImageLoader {
+  constructor(imagePath) {
+    this.imagePath = imagePath;
   }
 
-  // 画像要素を生成
-  createImage(imagePath) {
+  // 画像要素を生成 
+  body = document.body;
+  createImage() {
     return new Promise((resolve, reject) => {
       const imgElement = document.createElement("img");
-      imgElement.src = imagePath;
+      imgElement.src = this.imagePath;
       imgElement.classList.add("images");
 
       imgElement.onload = () => {
@@ -38,17 +37,20 @@ class imageLoader {
 
   async loadImage() {
     try {
-      const loader = new imageLoader();
-      await this.createImage(imagePath1);
-      await this.wait(2);
-      await this.createImage(imagePath2);
+      await this.createImage();
       await this.wait(2);
     } catch (error) {
       console.log(error);
     }
   }
 }
-const imagePath1 = "images/1_image.jpeg";
-const imagePath2 = "images/2_image.jpeg";
-const loader = new imageLoader();
-loader.loadImage();
+
+const loader1 = new ImageLoader("images/1_image.jpeg");
+const loader2 = new ImageLoader("images/2_image.jpeg");
+
+const loadImages = async () => {
+  await loader1.loadImage();
+  await loader2.loadImage();
+};
+
+loadImages();
